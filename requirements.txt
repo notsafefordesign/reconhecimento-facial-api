@@ -2,10 +2,8 @@ flask
 gunicorn
 deepface
 requests
-tensorflow # Essencial para DeepFace
-opencv-python # Essencial para DeepFace
-Flask-Cors # Você está usando flask_cors
-# tf-keras não é estritamente necessário se 'tensorflow' já inclui Keras,
-# mas não prejudica se DeepFace o procurar explicitamente.
-# A versão mais recente do TensorFlow (>=2.6) inclui o Keras.
-# Apenas 'tensorflow' deve ser suficiente.
+tensorflow
+opencv-python
+Flask-Cors
+Pillow
+tf-keras  # <<< ADICIONE ESTA LINHA
