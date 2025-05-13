@@ -57,9 +57,13 @@ def reconhecer():
         wp_api_url = 'https://dev-ab2l.pantheonsite.io/wp-json/meus/v1/eventos'
         app.logger.info(f"Buscando eventos de: {wp_api_url}")
         
-        eventos_response = requests.get(wp_api_url, timeout=15) # Timeout de 15s
-        eventos_response.raise_for_status() # Levanta erro para status 4xx/5xx
-        eventos = eventos_response.json()
+       eventos_response = requests.get(wp_api_url, timeout=15) # Timeout de 15s
+eventos_response.raise_for_status() # Levanta erro para status 4xx/5xx
+eventos_originais = eventos_response.json() # Renomeie para não confundir
+
+# PARA TESTE: Processe apenas o primeiro evento
+eventos = eventos_originais[:1] 
+app.logger.info(f"Recebidos {len(eventos_originais)} eventos do WordPress, processando APENAS {len(eventos)} para teste.")
         
         if not isinstance(eventos, list):
             app.logger.error(f"API do WordPress nao retornou uma lista. Resposta: {eventos}")
