@@ -67,7 +67,7 @@ def reconhecer():
         eventos_response.raise_for_status()
         eventos_originais = eventos_response.json()
         
-        eventos = eventos_originais[:1] # PARA TESTE: Processe apenas o primeiro evento
+        eventos = eventos_originais #[:1] # PARA TESTE: Processe apenas o primeiro evento
         app.logger.info(f"Recebidos {len(eventos_originais)} eventos do WordPress, processando APENAS {len(eventos)} para teste.")
         
         if not isinstance(eventos_originais, list):
