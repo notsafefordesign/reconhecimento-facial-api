@@ -4,8 +4,13 @@ import requests
 import os
 
 app = Flask(__name__)
+
+# Pasta para armazenar as imagens temporárias
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Definir a pasta de uploads
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/')
 def home():
@@ -13,11 +18,12 @@ def home():
 
 @app.route('/reconhecer', methods=['POST'])
 def reconhecer():
+    # Verifica se o arquivo foi enviado
     if 'imagem' not in request.files:
         return jsonify({"erro": "Envie uma imagem"}), 400
 
     ref = request.files['imagem']
-    ref_path = os.path.join(UPLOAD_FOLDER, ref.filename)
+    ref_path = os.path.join(app.config['UPLOAD_FOLDER'], ref.filename)
     ref.save(ref_path)
 
     # Chama a API do seu site WordPress que retorna os eventos com fotos
@@ -30,19 +36,22 @@ def reconhecer():
             continue
 
         nome_img = url.split('/')[-1]
-        img_path = os.path.join(UPLOAD_FOLDER, nome_img)
+        img_path = os.path.join(app.config['UPLOAD_FOLDER'], nome_img)
 
         try:
+            # Baixa a imagem do evento
             img_data = requests.get(url).content
             with open(img_path, 'wb') as f:
                 f.write(img_data)
 
+            # Realiza a comparação facial
             result = DeepFace.verify(
                 img1_path=ref_path,
                 img2_path=img_path,
                 enforce_detection=False
             )
 
+            # Se as imagens forem iguais, adiciona o evento à lista
             if result['verified']:
                 encontrados.append(evento)
 
@@ -51,3 +60,11 @@ def reconhecer():
             continue
 
     return jsonify({"encontrado_em": encontrados})
+
+
+if __name__ == "__main__":
+    # Obtém a porta do Render (se não estiver definida, usa a 5000)
+    port = int(os.environ.get("PORT", 5000))
+
+    # Inicia o servidor Flask
+    app.run(host="0.0.0.0", port=port)
