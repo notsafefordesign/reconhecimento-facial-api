@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: reconhecimento-facial
+    name: reconhecimento-facial-api
     runtime: python
     buildCommand: ""
-    startCommand: "python app.py"
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: "TRUE"
+    startCommand: gunicorn app:app
+    env: python
+    plan: free
+    autoDeploy: true
