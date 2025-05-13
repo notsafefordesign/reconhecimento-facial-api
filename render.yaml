@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: reconhecimento-facial
+    runtime: python
+    buildCommand: ""
+    startCommand: "python app.py"
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "TRUE"
