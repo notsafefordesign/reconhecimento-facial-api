@@ -31,13 +31,16 @@ def home():
 
 @app.route('/reconhecer', methods=['POST'])
 def reconhecer():
-    app.logger.info("Rota /reconhecer chamada")
+    app.logger.info("========= ROTA /reconhecer INICIADA =========") # <--- ESTA É A NOVA LINHA DE LOG ADICIONADA
+    app.logger.info("Conteúdo de request.files: %s", request.files) # <--- ADICIONE ESTE LOG TAMBÉM para ver se o arquivo chega
+    app.logger.info("Conteúdo de request.form: %s", request.form)   # <--- E ESTE para ver outros dados do formulário
 
     if 'imagem' not in request.files:
-        app.logger.warning("Nenhuma imagem enviada")
+        app.logger.warning("Nenhuma imagem enviada no request.files")
         return jsonify({"erro": "Envie uma imagem"}), 400
 
     ref_file = request.files['imagem']
+    app.logger.info(f"Arquivo de imagem recebido: {ref_file.filename}, mimetype: {ref_file.mimetype}")
     
     # Gera um nome de arquivo único para a imagem de referência
     file_extension = os.path.splitext(ref_file.filename)[1]
