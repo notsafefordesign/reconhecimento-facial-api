@@ -2,8 +2,8 @@ services:
   - type: web
     name: reconhecimento-facial-api
     runtime: python
-    buildCommand: ""
-    startCommand: gunicorn app:app
+    buildCommand: pip install -r requirements.txt   # Comando para instalar as dependências
+    startCommand: gunicorn app:app                 # Comando para iniciar o Flask
     env: python
     plan: free
     autoDeploy: true
