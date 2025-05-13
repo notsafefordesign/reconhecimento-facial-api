@@ -6,8 +6,10 @@ from flask import Flask, request, jsonify
 from deepface import DeepFace
 import requests
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Libera CORS para todas as origens
 
 # Pasta para armazenar as imagens temporárias
 UPLOAD_FOLDER = "uploads"
@@ -67,8 +69,6 @@ def reconhecer():
 
 
 if __name__ == "__main__":
-    # Obtém a porta do Render (se não estiver definida, usa a 5000)
-    port = int(os.environ.get("PORT", 5000))
-
-    # Inicia o servidor Flask
+    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
+
