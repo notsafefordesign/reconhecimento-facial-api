@@ -109,7 +109,7 @@ def reconhecer():
                     app.logger.info(f"Rosto encontrado no evento (SFace): {evento.get('title', evento.get('id', 'Detalhes do Evento'))}") # Adicionei (SFace) aqui também
 
             except Exception as e_df:
-                app.logger.error(f"Erro no DeepFace (SFace) ao comparar com {foto_url}: {e_df}") # Adicionei (SFace)
+                app.logger.error(f"Erro no DeepFace (SFace) ao comparar com {foto_url}. Erro: {str(e_df)}", exc_info=True) # Adicionei (SFace)
                 # Considerar se deve continuar ou parar; por enquanto, continua
                 continue
         
