@@ -88,32 +88,28 @@ def reconhecer():
             temp_files_to_clean.append(img_path)
 
             try:
-                app.logger.info(f"Baixando imagem do evento: {foto_url}")
-                img_data_response = requests.get(foto_url, timeout=15)
-                img_data_response.raise_for_status()
-                
-                with open(img_path, 'wb') as f:
-                    f.write(img_data_response.content)
-                app.logger.info(f"Imagem do evento salva em: {img_path}")
+                app.logger.info(f"Imagem do evento salva em: {img_path}") # Linha existente
 
-                app.logger.info(f"Comparando {ref_path} com {img_path}")
+                # NOVO LOG ANTES DA COMPARAÇÃO, INDICANDO SFace:
+                app.logger.info(f"Comparando {ref_path} com {img_path} usando SFace") 
+
+                # CHAMADA DeepFace.verify MODIFICADA PARA USAR SFace:
                 result = DeepFace.verify(
                     img1_path=ref_path,
                     img2_path=img_path,
-                    model_name="VGG-Face", # Pode especificar modelos: "VGG-Face", "Facenet", "ArcFace" etc.
-                    enforce_detection=False # Mantenha False se as imagens já estiverem bem cortadas no rosto
+                    model_name="SFace",  # <--- MUDANÇA PRINCIPAL AQUI
+                    enforce_detection=False
                 )
-                app.logger.info(f"Resultado da verificacao para {foto_url}: {result}")
+
+                # NOVO LOG DEPOIS DA COMPARAÇÃO, INDICANDO SFace:
+                app.logger.info(f"Resultado da verificacao para {foto_url} (SFace): {result}")
 
                 if result.get('verified'): # Usar .get() para evitar KeyError
                     encontrados.append(evento)
-                    app.logger.info(f"Rosto encontrado no evento: {evento.get('title', evento.get('id', 'Detalhes do Evento'))}")
+                    app.logger.info(f"Rosto encontrado no evento (SFace): {evento.get('title', evento.get('id', 'Detalhes do Evento'))}") # Adicionei (SFace) aqui também
 
-            except requests.exceptions.RequestException as e_req:
-                app.logger.error(f"Erro de rede ao baixar/processar {foto_url}: {e_req}")
-                continue # Pula para o proximo evento
             except Exception as e_df:
-                app.logger.error(f"Erro no DeepFace ao comparar com {foto_url}: {e_df}")
+                app.logger.error(f"Erro no DeepFace (SFace) ao comparar com {foto_url}: {e_df}") # Adicionei (SFace)
                 # Considerar se deve continuar ou parar; por enquanto, continua
                 continue
         
