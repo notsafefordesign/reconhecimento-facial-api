@@ -1,3 +1,7 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  # Desabilita o uso da GPU
+
+
 from flask import Flask, request, jsonify
 from deepface import DeepFace
 import requests
