@@ -2,8 +2,12 @@ services:
   - type: web
     name: reconhecimento-facial-api
     runtime: python
-    buildCommand: pip install -r requirements.txt   # Comando para instalar as dependências
-    startCommand: gunicorn app:app                 # Comando para iniciar o Flask
-    env: python
+    # pythonVersion: "3.9" # Especifique uma versão se necessário, ex: "3.8", "3.9", "3.10"
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 4 --timeout 120 app:app # Timeout aumentado para 120s, ajuste threads conforme necessário
+    env: python # Esta linha 'env: python' pode ser 'runtimeSpecific', ex: PYTHON_VERSION
     plan: free
     autoDeploy: true
+    healthCheckPath: / # Adiciona um health check para o Render saber se a API está OK
