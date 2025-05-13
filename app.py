@@ -57,20 +57,21 @@ def reconhecer():
         wp_api_url = 'https://dev-ab2l.pantheonsite.io/wp-json/meus/v1/eventos'
         app.logger.info(f"Buscando eventos de: {wp_api_url}")
         
-       eventos_response = requests.get(wp_api_url, timeout=15) # Timeout de 15s
-eventos_response.raise_for_status() # Levanta erro para status 4xx/5xx
-eventos_originais = eventos_response.json() # Renomeie para não confundir
-
-# PARA TESTE: Processe apenas o primeiro evento
-eventos = eventos_originais[:1] 
-app.logger.info(f"Recebidos {len(eventos_originais)} eventos do WordPress, processando APENAS {len(eventos)} para teste.")
+        eventos_response = requests.get(wp_api_url, timeout=15) # Timeout de 15s
+        eventos_response.raise_for_status() # Levanta erro para status 4xx/5xx
+        eventos_originais = eventos_response.json() # Renomeie para não confundir
         
-        if not isinstance(eventos, list):
-            app.logger.error(f"API do WordPress nao retornou uma lista. Resposta: {eventos}")
+        # PARA TESTE: Processe apenas o primeiro evento
+        eventos = eventos_originais[:1] 
+        app.logger.info(f"Recebidos {len(eventos_originais)} eventos do WordPress, processando APENAS {len(eventos)} para teste.")
+                
+        if not isinstance(eventos_originais, list): # Verifique a lista original, não a 'eventos' que é um slice
+            app.logger.error(f"API do WordPress nao retornou uma lista. Resposta: {eventos_originais}")
             return jsonify({"erro": "Formato de resposta inesperado da API do WordPress."}), 500
         
-        app.logger.info(f"Recebidos {len(eventos)} eventos do WordPress.")
+        # app.logger.info(f"Total de eventos originais: {len(eventos_originais)}, processando: {len(eventos)} para teste.") # Este log já está acima
         encontrados = []
+
 
         for evento in eventos:
             foto_url = evento.get('foto_url')
